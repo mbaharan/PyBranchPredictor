@@ -71,7 +71,7 @@ if __name__ =='__main__':
 	tableSize = 1024
 	nBitSize = 3
 	localHistoryTableSize = 128
-	fileName = '/home/mbaharan/workingDir/branchTraces/branch-trace-gcc.trace'
+	fileName = './branch-trace-gcc.trace'
 	limit = 0
 	data = readFile(fileName ,limit)
 	simulationMode = 3
