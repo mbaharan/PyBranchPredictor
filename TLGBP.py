@@ -22,45 +22,40 @@ SOFTWARE.
 from nBitCounter import nBitCounter
 
 class TwoLevelGlobalBranchPredictor:
-    def __init__(self, name, tableSize, nBitSize, firstN_bitCounter, totalAccess, savingMode):
+    def __init__(self, name, tableSize, nBitSize, firstN_bitCounter, savingMode):
         self.name = name
-        self.tableSize = tableSize;
-        self.access = 0;
-        self.totalAccess = totalAccess
-        self.predictedTrue = 0;
-        self.patternHistoryTable = {};
-        self.Mask = tableSize - 1;
-        self.GHR=0;
+        self.tableSize = tableSize
+        self.access = 0
+        self.predictedTrue = 0
+        self.patternHistoryTable = {}
+        self.Mask = tableSize - 1
+        self.GHR = 0
         self.converges = []
         self.savingMode = savingMode
         for i in range(0, self.tableSize):
-            n = nBitCounter(nBitSize, firstN_bitCounter, 'sarturated');
-            self.patternHistoryTable[i]=n;#PC, nBitCounter
+            n = nBitCounter(nBitSize, firstN_bitCounter, 'sarturated')
+            self.patternHistoryTable[i] = n  # PC, nBitCounter
             
-    def evalue(self, data):
+    def evaluate(self, data):
         
         actualOutcome = data[1]
         
-        self.access = self.access + 1;
+        self.access = self.access + 1
         
         predictedTrue = self.patternHistoryTable[self.GHR].evaluate(actualOutcome)
         
         self.GHR = self.GHR << 1
        
-        if(actualOutcome == 'T'):
+        if actualOutcome == 'T':
             self.GHR = self.GHR | 1
          
-        self.GHR = self.GHR & self.Mask;
+        self.GHR = self.GHR & self.Mask
 
-        if(predictedTrue):
+        if predictedTrue:
             self.predictedTrue = self.predictedTrue + 1
-        #else:
-        #    self.predictedTrue = self.predictedTrue - 1
-        #    if(self.predictedTrue <= 0):
-        #        self.predictedTrue = 1;
 
-        #self.converges.append(math.log(float(self.predictedTrue)/self.totalAccess))
-        if(self.savingMode == 0 ):
-            self.converges.append(1-(float(self.predictedTrue)/self.totalAccess))
+        if not self.savingMode:
+            if not (self.access-1) % 1000:
+                self.converges.append(1-(float(self.predictedTrue)/self.access))
         else:
-            self.converges = 1-(float(self.predictedTrue)/self.totalAccess)
+            self.converges = 1-(float(self.predictedTrue)/self.access)

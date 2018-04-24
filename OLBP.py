@@ -22,40 +22,39 @@ SOFTWARE.
 
 from nBitCounter import nBitCounter
 
-class OneLevelBranchPredictor:
-	def __init__(self, name, tableSize, nBitSize, firstN_bitCounter, totalAccess, savingmode):
-		self.name = name
-		self.tableSize = tableSize;
-		self.access = 0;
-		self.totalAccess = totalAccess
-		self.predictedTrue = 0;
-		self.patternHistoryTable = {};
-		self.Mask = tableSize - 1;
-		self.converges = []
-		for i in range(0, self.tableSize):
-			n = nBitCounter(nBitSize, firstN_bitCounter, 'sarturated');
-			self.patternHistoryTable[i]=n;#PC, nBitCounter
-		self.savingMode = savingmode	
-	def evalue(self, data):
-		tagAddress = data[0]
-		actualOutcome = data[1]
-		
-		self.access = self.access + 1;
-		
-		index = tagAddress & self.Mask;
-		predictedTrue = self.patternHistoryTable[index].evaluate(actualOutcome)
-		if(predictedTrue):
-			self.predictedTrue = self.predictedTrue + 1
-		
-		#else:
-		#	self.predictedTrue = self.predictedTrue - 1
-		#	if(self.predictedTrue <= 0):
-		#		self.predictedTrue = 1;
 
-		#self.converges.append(math.log(float(self.predictedTrue)/self.totalAccess))
-		if(self.savingMode == 0 ):
-			self.converges.append(1-(float(self.predictedTrue)/self.totalAccess))
-		else:
-			self.converges = 1-(float(self.predictedTrue)/self.totalAccess)
-			
-		return predictedTrue
+class OneLevelBranchPredictor:
+
+    def __init__(self, name, tableSize, nBitSize, firstN_bitCounter, savingmode):
+        self.name = name
+        self.tableSize = tableSize
+        self.access = 0
+        self.predictedTrue = 0
+        self.patternHistoryTable = {}
+        self.Mask = tableSize - 1
+        self.converges = []
+        for i in range(0, self.tableSize):
+            n = nBitCounter(nBitSize, firstN_bitCounter, 'sarturated')
+            self.patternHistoryTable[i] = n  # PC, nBitCounter
+        self.savingMode = savingmode
+
+    def evaluate(self, data):
+
+        tagAddress = data[0]
+        actualOutcome = data[1]
+        
+        self.access = self.access + 1
+        
+        index = tagAddress & self.Mask
+        predictedTrue = self.patternHistoryTable[index].evaluate(actualOutcome)
+
+        if predictedTrue:
+            self.predictedTrue = self.predictedTrue + 1
+        
+        if not self.savingMode:
+            if not (self.access-1) % 1000:
+                self.converges.append(1-(float(self.predictedTrue)/self.access))
+        else:
+            self.converges = 1-(float(self.predictedTrue)/self.access)
+            
+        return predictedTrue
