@@ -54,10 +54,6 @@ def simulate(predictors, fileName):
                     if not (i-1) % 100000:
                         print(predictor.name + " simulation completed for: {}, error: {:.2f}%"
                               .format(i, (predictor.converges[-1])*100), end='\n', flush=True)
-
-    for j in range(0, 4):
-        print(float(predictors[i].predictedTrue)/predictors[i].access)
-
     return i
     
 
