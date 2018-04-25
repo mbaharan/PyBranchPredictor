@@ -22,51 +22,51 @@ SOFTWARE.
 
 class nBitCounter:
     def __init__(self, nSize, firstPrediction, model):
-        self.nSize = nSize;
-        self.Max = 2**(nSize)-1;
+        self.nSize = nSize
+        self.Max = 2**(nSize)-1
         self.model = model
         if(firstPrediction == "T"):
-            self.counter = self.Max;
+            self.counter = self.Max
         else:
-            self.counter = 0;
+            self.counter = 0
             
     def evaluate(self, actualResult):
-        res = True;
+        res = True
         assert (self.counter <= self.Max)
         assert (self.counter >= 0)
         
-        if(self.model == 'hysteresis'):
-            if(actualResult == "T"):
-                if(self.counter >= (self.Max)/2 + 1):
-                    if(self.counter < (self.Max)):
+        if self.model == 'hysteresis':
+            if actualResult == "T":
+                if self.counter >= (self.Max)/2 + 1:
+                    if self.counter < (self.Max):
                         self.counter = self.counter + 1
                 else:
-                    if(self.counter == (self.Max)/2):
+                    if self.counter == (self.Max)/2:
                         self.counter = self.Max
                     else:
                         self.counter = self.counter + 1
                         res = False
             else:
-                if(self.counter <= (self.Max)/2):
-                    if(self.counter > 0):
+                if self.counter <= (self.Max)/2:
+                    if self.counter > 0:
                         self.counter = self.counter - 1
                 else:
-                    if(self.counter == (self.Max)/2 + 1):
+                    if self.counter == (self.Max)/2 + 1:
                         self.counter = 0
                     else:
                         self.counter = self.counter - 1
                         res = False
         else:
-            if(actualResult == "T"):
-                if(self.counter >= (self.Max)/2 + 1):
-                    if(self.counter < (self.Max)):
+            if actualResult == "T":
+                if self.counter >= (self.Max)/2 + 1:
+                    if self.counter < (self.Max):
                         self.counter = self.counter + 1
                 else:
                     self.counter = self.counter + 1
                     res = False
             else:
-                if(self.counter <= (self.Max)/2):
-                    if(self.counter > 0):
+                if self.counter <= (self.Max)/2:
+                    if self.counter > 0:
                         self.counter = self.counter - 1
                 else:
                     self.counter = self.counter - 1

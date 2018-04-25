@@ -27,6 +27,7 @@ from OLBP import OneLevelBranchPredictor
 from TLGBP import TwoLevelGlobalBranchPredictor
 from Gshare import Gshare 
 from TLLBP import TwoLevelLocalBranchpredictor
+from Tournament import Tournament
 
 import gzip
 
@@ -51,7 +52,7 @@ def simulate(predictors, fileName):
                     predictor.evaluate([int(data[0], 10), val])
 
                     if not (i-1) % 100000:
-                        print(predictor.name + " simulation completed for: {}, error: {:.2f}"
+                        print(predictor.name + " simulation completed for: {}, error: {:.2f}%"
                               .format(i, (predictor.converges[-1])*100), end='\n', flush=True)
 
     for j in range(0, 4):
@@ -61,10 +62,10 @@ def simulate(predictors, fileName):
     
 
 if __name__ == '__main__':
-    tableSize = 1024
+    tableSize = 8192
     nBitSize = 2
-    localHistoryTableSize = 128
-    fileName = './perlbench_branch.gz'
+    localHistoryTableSize = 256
+    fileName = './perlbench_s.gz'
 
     p1 = OneLevelBranchPredictor(name='1-level', tableSize=tableSize, nBitSize=nBitSize, firstN_bitCounter='T',
                                  savingmode=0)
@@ -77,4 +78,6 @@ if __name__ == '__main__':
     p4 = TwoLevelLocalBranchpredictor(name='2-level local', localTablSize=localHistoryTableSize, tableSize=tableSize,
                                       nBitSize=nBitSize, firstN_bitCounter='T', savingMode=0)
 
-    simulate([p1, p2, p3, p4], fileName)
+    p5 = Tournament(name='Tournament', tableSize=tableSize, nBitSize=nBitSize, firstN_bitCounter='T', savingMode=0)
+
+    simulate([p1, p2, p3, p4, p5], fileName)
